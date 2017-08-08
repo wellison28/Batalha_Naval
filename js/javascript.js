@@ -13,6 +13,8 @@ var view = {
 	}
 }
 
+
+
 var model = {
 
 	boardSize: 7,
@@ -57,12 +59,19 @@ var model = {
 var controller = {
 	guesses: 0,
 
-	processesGuess: function(guess){
-		
+	processGuess: function(guess){
+		var location = parseGuess(guess);
+		if(location){
+			var hit = model.fire(location);
+			this.guesses++;
+			if(hit && model.shipsSunk === model.numShips){
+				view.displayMessage("You sank all my battleship, in " + this.guesses + " guesses");
+			}
+		}
 	}
 }
 
-
+//Validação do Palpite
 function parseGuess(guess){
 	var alphabet = ["A","B","C","D","E","F","G"];
 	if(guess === null || guess.length !== 2)
@@ -81,16 +90,18 @@ function parseGuess(guess){
 	return null;
 }
 
-console.log(parseGuess("Ao"));
-console.log(parseGuess("U5"));
-console.log(parseGuess("12"));
-console.log(parseGuess("86"));
-console.log(parseGuess("F5"));
+function handleFireButton(){
+	var input = document.getElementById("guessInput");
+	var guess = input.value; 
+	controller.processGuess(guess);
+	input.value = "";
+}
 
+function init(){
+	document.getElementById("fireButton").onclick = handleFireButton;
+}
 
-
-
-
+window.onload = init;
 
 
 
